@@ -112,19 +112,33 @@ namespace NKernel {
     };
 
     struct TTweedieTarget {
+        float P;
+
         __host__ __device__ __forceinline__ TTweedieTarget(float p)
             : P(p) {
         }
 
         __device__ __forceinline__ float Score(float target, float prediction) const {
-            const float expPred2 = __expf(prediction * (2.0 - P));
             const float expPred1 = __expf(prediction * (1.0 - P));
+            const float expPred2 = __expf(prediction * (2.0 - P));
             return expPred2 / (2.0 - P) - target * expPred1 / (1.0 - P);
         }
 
+        __device__ __forceinline__ float Der(float target, float prediction) const {
+            const float expPred1 = __expf(prediction * (1.0 - P));
+            const float expPred2 = __expf(prediction * (2.0 - P));
+            // calvin: I don't entirely understand why they do it this way, but first derivatives
+            // in catboost are the negative of what they're supposed to be...
+            return target * expPred1 - expPred2; 
+        }
 
-    }
-
+        __device__ __forceinline__ float Der2(float target, float prediction) const {
+            const float expPred1 = __expf(prediction * (1.0 - P));
+            const float expPred2 = __expf(prediction * (2.0 - P));
+            // calvin: and yet in the diagonal hessian, it's positive again?
+            return (2.0 - P) * expPred2 - target * (1.0 - P) * expPred1;
+        }
+    };
 
     struct TRmseTarget  {
 
