@@ -111,6 +111,20 @@ namespace NKernel {
         }
     };
 
+    struct TTweedieTarget {
+        __host__ __device__ __forceinline__ TTweedieTarget(float p)
+            : P(p) {
+        }
+
+        __device__ __forceinline__ float Score(float target, float prediction) const {
+            const float expPred2 = __expf(prediction * (2.0 - P));
+            const float expPred1 = __expf(prediction * (1.0 - P));
+            return expPred2 / (2.0 - P) - target * expPred1 / (1.0 - P);
+        }
+
+
+    }
+
 
     struct TRmseTarget  {
 
