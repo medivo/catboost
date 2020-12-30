@@ -452,6 +452,12 @@ namespace NKernel {
                 POINTWISE_TARGET()
                 break;
             }
+            case ELossFunction::Tweedie:
+            {
+                TTweedieTarget target(alpha);
+                POINTWISE_TARGET()
+                break;
+            }
             case ELossFunction::Lq:
             {
                 TLqTarget target(alpha);
