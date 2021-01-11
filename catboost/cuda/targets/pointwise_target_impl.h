@@ -254,6 +254,10 @@ namespace NCatboostCuda {
                     Alpha = FromString<double>(targetOptions.GetLossParamsMap().at("q"));
                     break;
                 }
+                case ELossFunction::Tweedie: {
+                    Alpha = FromString<double>(targetOptions.GetLossParamsMap().at("variance_power"));
+                    break;
+                }
                 case ELossFunction::MAE: {
                     Alpha = 0.5;
                     break;
